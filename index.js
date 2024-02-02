@@ -29,45 +29,42 @@ async function run() {
 
         //News Section
         //------------
-        const news = client.db('cseaa').collection('news');
+        const books = client.db('code').collection('books');
         //for reading news
-        app.get('/news', async (req, res) => {
-            const cursor = news.find().sort({ createdAt: -1 });
+        app.get('/books', async (req, res) => {
+            const cursor = books.find().sort({ createdAt: -1 });
             const result = await cursor.toArray();
             res.send(result);
         })
         //for creating news
-        app.post('/news', async (req, res) => {
-            const newNews = req.body;
-            console.log(newNews);
-            const result = await news.insertOne(newNews);
+        app.post('/books', async (req, res) => {
+            const newBooks = req.body;
+            console.log(newBooks);
+            const result = await books.insertOne(newBooks);
             res.send(result);
         })
-        //for deleting
-        app.delete('/news/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: new ObjectId(id) }
-            const result = await news.deleteOne(query);
-            res.send(result);
-        })
+        
         //for updating
-        app.get('/news/:id', async (req, res) => {
+        app.get('/books/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
-            const result = await news.findOne(query);
+            const result = await books.findOne(query);
             res.send(result);
         })
-        app.put('/news/:id', async (req, res) => {
+        app.put('/books/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: new ObjectId(id) }
             const options = { upsert: true };
-            const updatedNews = req.body;
+            const updatedBooks = req.body;
             const update = {
                 $set: {
-                    post: updatedNews.post
+                    title: updatedBooks.title,
+                    authod: updatedBooks.authod,
+                    genre: updatedBooks.genre,
+                    price: updatedBooks.price
                 }
             }
-            const result = await news.updateOne(filter, update, options);
+            const result = await books.updateOne(filter, update, options);
             res.send(result);
         })
         
