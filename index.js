@@ -10,8 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 
-
-const uri = "mongodb+srv://saif06065:STATELESSTRIO@e-book.l4r6lff.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://dnafim081999:szCGr2bOhWGcYqbl@cluster0.l7y8quk.mongodb.net/?retryWrites=true&w=majority";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -43,7 +42,7 @@ async function run() {
             const result = await books.insertOne(newBooks);
             res.send(result);
         })
-        
+
         //for updating
         app.get('/books/:id', async (req, res) => {
             const id = req.params.id;
@@ -59,7 +58,7 @@ async function run() {
             const update = {
                 $set: {
                     title: updatedBooks.title,
-                    authod: updatedBooks.authod,
+                    author: updatedBooks.author,
                     genre: updatedBooks.genre,
                     price: updatedBooks.price
                 }
@@ -67,7 +66,29 @@ async function run() {
             const result = await books.updateOne(filter, update, options);
             res.send(result);
         })
-        
+
+
+        // Search and filter books
+        app.get('/api/books', async (req, res) => {
+            const { title, author, genre, sort, order } = req.query;
+
+            // Build query based on provided search criteria
+            const searchQuery = {};
+            if (title) searchQuery.title = title;
+            if (author) searchQuery.author = author;
+            if (genre) searchQuery.genre = genre;
+
+            // Sorting criteria
+            const sortCriteria = {};
+            if (sort) sortCriteria[sort] = order === 'A' ? 1 : -1;
+
+            // Fetch and sort books
+            const cursor = books.find(searchQuery).sort(sortCriteria);
+            const result = await cursor.toArray();
+
+            // Wrap the result in a 'books' object
+            res.json({ books: result });
+        });
 
 
         // Send a ping to confirm a successful connection
