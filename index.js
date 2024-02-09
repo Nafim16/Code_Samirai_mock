@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8000;
 require('dotenv').config();
 
 //middleware
@@ -28,7 +28,7 @@ async function run() {
         await client.connect();
 
         
-        const books = client.db('code').collection('books');
+        const users = client.db('code').collection('users');
         
         app.get('/api/books', async (req, res) => {
 
@@ -49,16 +49,15 @@ async function run() {
 
         })
         
-        app.post('/api/books', async (req, res) => {
-            const newBooks = req.body;
+        app.post('/api/users', async (req, res) => {
+            const newUsers = req.body;
             try {
-                console.log(newBooks);
-                const result = await books.insertOne(newBooks);
+                console.log(newUsers);
+                const result = await users.insertOne(newUsers);
                 res.json({
                     status: 201,
                     message: "Created",
                     books: result
-
                 });
             }
             catch (err) {
