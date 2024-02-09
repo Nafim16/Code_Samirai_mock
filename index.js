@@ -30,24 +30,24 @@ async function run() {
         
         const users = client.db('code').collection('users');
         
-        app.get('/api/books', async (req, res) => {
+        // app.get('/api/books', async (req, res) => {
 
-            try {
-                const cursor = books.find().sort({ createdAt: -1 });
-                const result = await cursor.toArray();
-                res.json({
-                    status: 200,
-                    books: result
-                });
-            } catch (err) {
-                res.json({
-                    status: 404,
-                    message: `books were not found`,
-                    books: result
-                });
-            }
+        //     try {
+        //         const cursor = books.find().sort({ createdAt: -1 });
+        //         const result = await cursor.toArray();
+        //         res.json({
+        //             status: 200,
+        //             books: result
+        //         });
+        //     } catch (err) {
+        //         res.json({
+        //             status: 404,
+        //             message: `books were not found`,
+        //             books: result
+        //         });
+        //     }
 
-        })
+        // })
         
         app.post('/api/users', async (req, res) => {
             const newUsers = req.body;
@@ -56,8 +56,7 @@ async function run() {
                 const result = await users.insertOne(newUsers);
                 res.json({
                     status: 201,
-                    message: "Created",
-                    books: result
+                    users: result
                 });
             }
             catch (err) {
@@ -68,92 +67,92 @@ async function run() {
 
         
 
-        app.get('/api/books/:id', async (req, res) => {
-            const id = parseInt(req.params.id);
+        // app.get('/api/books/:id', async (req, res) => {
+        //     const id = parseInt(req.params.id);
 
-            const query = { id: id };
+        //     const query = { id: id };
 
-            try {
-                const result = await books.findOne(query);
+        //     try {
+        //         const result = await books.findOne(query);
 
-                if (result) {
-                    res.json({
-                        status: 200,
-                        books: result
-                    });
-                } else {
-                    res.json({
-                        status: 404,
-                        message: `Book with numberid: ${id} was not found`
-                    });
-                }
+        //         if (result) {
+        //             res.json({
+        //                 status: 200,
+        //                 books: result
+        //             });
+        //         } else {
+        //             res.json({
+        //                 status: 404,
+        //                 message: `Book with numberid: ${id} was not found`
+        //             });
+        //         }
 
-            } catch (err) {
+        //     } catch (err) {
 
-            }
-        });
+        //     }
+        // });
 
-
-
-
-        
-
-        app.put('/api/books/:id', async (req, res) => {
-            const id = parseInt(req.params.id);
-            const filter = { id: id };
-
-            const updatedBooks = req.body;
-
-            try {
-
-                const ifBookExist = await books.findOne(filter);
-                if (!ifBookExist) {
-                    return res.status(404).json({
-                        status: 404,
-                        message: `Book with id: ${id} was not found`
-                    });
-                }
-
-                const update = {
-                    $set: {
-                        title: updatedBooks.title,
-                        author: updatedBooks.author,
-                        genre: updatedBooks.genre,
-                        price: updatedBooks.price
-                    }
-                };
-
-                const result = await books.updateOne(filter, update);
-
-                res.json({
-                    status: 200,
-                    message: "OK",
-                    books: result
-                });
-            } catch (err) {
-
-            }
-        });
 
 
 
         
-        app.get('/api/books', async (req, res) => {
-            const { title, author, genre, sort, order } = req.query;
 
-            const searchQuery = {};
-            if (title) searchQuery.title = title;
-            if (author) searchQuery.author = author;
-            if (genre) searchQuery.genre = genre;
+        // app.put('/api/books/:id', async (req, res) => {
+        //     const id = parseInt(req.params.id);
+        //     const filter = { id: id };
 
-            const sortCriteria = {};
-            if (sort) sortCriteria[sort] = order === 'ASC' ? 1 : -1;
+        //     const updatedBooks = req.body;
 
-            const cursor = books.find(searchQuery).sort(sortCriteria);
-            const result = await cursor.toArray();
+        //     try {
 
-            res.json({ books: result });
-        });
+        //         const ifBookExist = await books.findOne(filter);
+        //         if (!ifBookExist) {
+        //             return res.status(404).json({
+        //                 status: 404,
+        //                 message: `Book with id: ${id} was not found`
+        //             });
+        //         }
+
+        //         const update = {
+        //             $set: {
+        //                 title: updatedBooks.title,
+        //                 author: updatedBooks.author,
+        //                 genre: updatedBooks.genre,
+        //                 price: updatedBooks.price
+        //             }
+        //         };
+
+        //         const result = await books.updateOne(filter, update);
+
+        //         res.json({
+        //             status: 200,
+        //             message: "OK",
+        //             books: result
+        //         });
+        //     } catch (err) {
+
+        //     }
+        // });
+
+
+
+        
+        // app.get('/api/books', async (req, res) => {
+        //     const { title, author, genre, sort, order } = req.query;
+
+        //     const searchQuery = {};
+        //     if (title) searchQuery.title = title;
+        //     if (author) searchQuery.author = author;
+        //     if (genre) searchQuery.genre = genre;
+
+        //     const sortCriteria = {};
+        //     if (sort) sortCriteria[sort] = order === 'ASC' ? 1 : -1;
+
+        //     const cursor = books.find(searchQuery).sort(sortCriteria);
+        //     const result = await cursor.toArray();
+
+        //     res.json({ books: result });
+        // });
 
 
         // Send a ping to confirm a successful connection
